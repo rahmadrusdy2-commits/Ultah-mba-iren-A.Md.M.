@@ -1,196 +1,33 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-    <title>Happy Birthday ❤️</title>
-
+    <title>Kejutan untuk Mba Iren! 🎉</title>
     <link rel="stylesheet" href="style.css">
-
-    <!-- Font -->
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&family=Great+Vibes&display=swap" rel="stylesheet">
-
-    <!-- Font Awesome -->
-    <link rel="stylesheet"
-    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.1/css/all.min.css"/>
-
+    <!-- Library untuk efek Confetti -->
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
 </head>
-
 <body>
+    <!-- Pastikan nama file musik sesuai dengan yang ada di folder assets -->
+    <audio id="bg-music" src="assets/music.mp3" loop></audio>
 
-<!-- ================= LOADING ================= -->
-
-<div id="loading">
-
-    <div class="cake">
-        🎂
+    <!-- Halaman Pembuka -->
+    <div id="opening-screen" class="screen active">
+        <h1>Ada kejutan buat kamu! 💌</h1>
+        <button id="open-btn">Buka Kejutan 🎁</button>
     </div>
 
-    <h2>Menyiapkan Kejutan...</h2>
-
-</div>
-
-<!-- ================= MUSIC ================= -->
-
-<audio id="music" loop>
-
-    <source src="assets/music.mp3" type="audio/mpeg">
-
-</audio>
-
-<!-- ================= STAR ================= -->
-
-<div class="stars"></div>
-
-<!-- ================= HOME ================= -->
-
-<section id="home">
-
-    <h3>Hello...</h3>
-
-    <h1 id="nama">
-
-        Untuk Seseorang yang Spesial ❤️
-
-    </h1>
-
-    <button id="startButton">
-
-        🎁 Buka Hadiah
-
-    </button>
-
-</section>
-
-<!-- ================= GIFT ================= -->
-
-<section id="giftPage" class="hidden">
-
-    <div class="gift-box">
-
-        🎁
-
+    <!-- Halaman Utama (Muncul setelah tombol diklik) -->
+    <div id="main-screen" class="screen">
+        <div class="gallery">
+            <img id="photo" src="assets/foto1.jpg" alt="Foto Kenangan">
+        </div>
+        <div class="message-container">
+            <p id="typing-text"></p>
+        </div>
     </div>
 
-    <h2>Klik Kadonya ❤️</h2>
-
-</section>
-
-<!-- ================= BIRTHDAY ================= -->
-
-<section id="birthdayPage" class="hidden">
-
-<div class="container">
-
-<h1 class="title">
-
-🎂 Happy Birthday 🎂
-
-</h1>
-
-<p id="typing"></p>
-
-</div>
-
-<!-- Balloon -->
-
-<div id="balloons">
-
-    <span>🎈</span>
-    <span>🎈</span>
-    <span>🎈</span>
-    <span>🎈</span>
-    <span>🎈</span>
-
-</div>
-
-<!-- Hearts -->
-
-<div id="hearts"></div>
-
-</section>
-
-<!-- ================= GALLERY ================= -->
-
-<section id="gallery" class="hidden">
-
-<h2>📸 Kenangan Kita</h2>
-
-<div class="slider">
-
-<img id="slideImage"
-
-src="assets/foto1.jpg">
-
-</div>
-
-</section>
-
-<!-- ================= LETTER ================= -->
-
-<section id="letter" class="hidden">
-
-<div class="letter-box">
-
-<h2>💌 Surat Untukmu</h2>
-
-<p>
-
-Selamat ulang tahun...
-
-Semoga semua impianmu tercapai.
-
-Semoga selalu diberi kesehatan.
-
-Terima kasih telah menjadi orang yang luar biasa.
-
-Semoga kebahagiaan selalu bersamamu.
-
-❤️
-
-</p>
-
-</div>
-
-</section>
-
-<!-- ================= END ================= -->
-
-<section id="ending" class="hidden">
-
-<h1>
-
-I Wish You All The Best ❤️
-
-</h1>
-
-<h3>
-
-Have a Wonderful Birthday
-
-</h3>
-
-<button onclick="location.reload()">
-
-🔄 Ulangi
-
-</button>
-
-</section>
-
-<!-- Confetti -->
-
-<canvas id="confetti"></canvas>
-
-<!-- Firework -->
-
-<canvas id="fireworks"></canvas>
-
-<script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.3/dist/confetti.browser.min.js"></script>
-
-<script src="script.js"></script>
-
+    <script src="script.js"></script>
 </body>
 </html>
