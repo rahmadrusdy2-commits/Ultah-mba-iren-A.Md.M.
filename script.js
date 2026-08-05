@@ -135,47 +135,51 @@ addPhotoBtn.addEventListener('click', () => {
     });
 });
 
-// MEMPROSES FOTO YANG DIUPLOAD (BISA BANYAK)
+// MEMPROSES FOTO YANG DIUPLOAD (BISA BANYAK & LEBIH CEPAT)
 fileInput.addEventListener('change', function(e) {
     if (e.target.files && e.target.files.length > 0) {
         const files = Array.from(e.target.files);
-        let loadedCount = 0;
 
+        // Hentikan interval animasi sementara
         clearInterval(photoInterval);
         
+        // Kembalikan foto yang sedang aktif di tengah ke latar belakang
         if (currentPhotoIndex !== -1) {
             photoElements[currentPhotoIndex].classList.remove('active-photo');
         }
 
+        // Looping untuk memproses semua foto secara instan tanpa loading lama
         files.forEach((file) => {
-            const reader = new FileReader();
-            reader.onload = function(event) {
-                const newPhotoUrl = event.target.result;
-                photos.push(newPhotoUrl);
-                
-                const newImg = createScatteredPhoto(newPhotoUrl);
-                photoContainer.appendChild(newImg);
-                photoElements.push(newImg);
-                
-                loadedCount++;
-
-                if (loadedCount === files.length) {
-                    currentPhotoIndex = photoElements.length - 1;
-                    
-                    setTimeout(() => {
-                        photoElements[currentPhotoIndex].classList.add('active-photo');
-                        photoInterval = setInterval(animateNextPhoto, 4000); 
-                    }, 50);
-                    
-                    Swal.fire({ 
-                        toast: true, position: 'top-end', icon: 'success', 
-                        title: `${files.length} Foto berhasil ditambahkan!`, 
-                        showConfirmButton: false, timer: 3000, 
-                        background: '#1a1a2e', color: '#fff' 
-                    });
-                }
-            }
-            reader.readAsDataURL(file);
+            const newPhotoUrl = URL.createObjectURL(file); 
+            photos.push(newPhotoUrl);
+            
+            const newImg = createScatteredPhoto(newPhotoUrl);
+            photoContainer.appendChild(newImg);
+            photoElements.push(newImg);
         });
+
+        // Tampilkan foto pertama dari deretan foto yang baru saja ditambahkan
+        currentPhotoIndex = photoElements.length - files.length;
+        
+        setTimeout(() => {
+            photoElements[currentPhotoIndex].classList.add('active-photo');
+            // Lanjutkan kembali animasi bergiliran
+            photoInterval = setInterval(animateNextPhoto, 4000); 
+        }, 50);
+        
+        // Tampilkan notifikasi jumlah foto yang masuk
+        Swal.fire({ 
+            toast: true, 
+            position: 'top-end', 
+            icon: 'success', 
+            title: `${files.length} Foto berhasil ditambahkan!`, 
+            showConfirmButton: false, 
+            timer: 3000, 
+            background: '#1a1a2e', 
+            color: '#fff' 
+        });
+
+        // Reset nilai input agar bisa menambah file lagi di kemudian waktu
+        fileInput.value = "";
     }
 });
