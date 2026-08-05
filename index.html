@@ -6,31 +6,37 @@
     <title>Kejutan untuk Mba Iren! 🎉</title>
     <link rel="stylesheet" href="style.css">
     
+    <!-- Library Eksternal -->
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </head>
 <body>
     <audio id="bg-music" src="assets/music.mp3" loop></audio>
 
+    <!-- Halaman Pembuka -->
     <div id="opening-screen" class="screen active">
         <h1>Ada kejutan buat kamu! 💌</h1>
         <button id="open-btn">Buka Kejutan 🎁</button>
     </div>
 
+    <!-- Halaman Utama -->
     <div id="main-screen" class="screen">
-        <!-- Wadah untuk foto-foto yang berserakan -->
+        <!-- Wadah untuk foto-foto yang berserakan di belakang -->
         <div id="photo-container"></div>
 
+        <!-- Pesan Teks -->
         <div class="message-container">
             <p id="typing-text"></p>
         </div>
         
+        <!-- Tombol Aksi -->
         <div class="action-buttons">
             <button id="letter-btn" style="display: none;">Baca Surat Khusus 💌</button>
             <button id="add-photo-btn" style="display: none;">Tambah Foto 📸</button>
         </div>
         
-        <input type="file" id="file-input" accept="image/*" style="display: none;">
+        <!-- Input File (Multiple untuk banyak foto sekaligus) -->
+        <input type="file" id="file-input" accept="image/*" multiple style="display: none;">
     </div>
 
     <script src="script.js"></script>
