@@ -11,12 +11,15 @@ const photoContainer = document.getElementById('photo-container');
 const message = "Selamat ulang tahun, Mba Iren! 🎉 Semoga hari-harimu ke depan selalu dipenuhi dengan kebahagiaan, tawa, dan hal-hal manis. Terus bersinar ya! ✨";
 let charIndex = 0;
 
-const photos = ['assets/foto1.jpg', 'assets/foto2.jpg']; 
+// Menggabungkan foto bawaan dan foto yang sudah tersimpan permanen di localStorage browser
+const defaultPhotos = ['assets/foto1.jpg', 'assets/foto2.jpg'];
+const savedPhotos = JSON.parse(localStorage.getItem('saved_photos')) || [];
+let photos = [...defaultPhotos, ...savedPhotos];
+
 let photoElements = [];
 let currentPhotoIndex = -1;
 let photoInterval;
 
-// Fungsi untuk memberi posisi acak baru pada foto di latar belakang
 function randomizePosition(img) {
     const randomX = Math.floor(Math.random() * 96) + 2; 
     const randomY = Math.floor(Math.random() * 96) + 2; 
@@ -43,13 +46,12 @@ function initPhotos() {
     });
 }
 
-// Animasi bergantian: saat pindah foto, foto sebelumnya dikembalikan ke posisi acak baru
 function animateNextPhoto() {
     if (photoElements.length === 0) return;
 
     if (currentPhotoIndex !== -1) {
         photoElements[currentPhotoIndex].classList.remove('active-photo');
-        randomizePosition(photoElements[currentPhotoIndex]); // Mengubah posisi saat kembali ke latar belakang
+        randomizePosition(photoElements[currentPhotoIndex]);
     }
 
     currentPhotoIndex = (currentPhotoIndex + 1) % photoElements.length;
@@ -127,9 +129,12 @@ addPhotoBtn.addEventListener('click', () => {
     });
 });
 
+// MEMPROSES & MENYIMPAN FOTO PERMANEN KE LOCALSTORAGE
 fileInput.addEventListener('change', function(e) {
     if (e.target.files && e.target.files.length > 0) {
         const files = Array.from(e.target.files);
+        let loadedCount = 0;
+        let newUploadedUrls = [];
 
         clearInterval(photoInterval);
         
@@ -139,28 +144,46 @@ fileInput.addEventListener('change', function(e) {
         }
 
         files.forEach((file) => {
-            const newPhotoUrl = URL.createObjectURL(file); 
-            photos.push(newPhotoUrl);
-            
-            const newImg = createScatteredPhoto(newPhotoUrl);
-            photoContainer.appendChild(newImg);
-            photoElements.push(newImg);
-        });
+            const reader = new FileReader();
+            reader.onload = function(event) {
+                const base64Url = event.target.result;
+                newUploadedUrls.push(base64Url);
+                loadedCount++;
 
-        currentPhotoIndex = photoElements.length - files.length;
-        
-        setTimeout(() => {
-            photoElements[currentPhotoIndex].classList.add('active-photo');
-            photoInterval = setInterval(animateNextPhoto, 4000); 
-        }, 50);
-        
-        Swal.fire({ 
-            toast: true, position: 'top-end', icon: 'success', 
-            title: `${files.length} Foto berhasil ditambahkan!`, 
-            showConfirmButton: false, timer: 3000, 
-            background: '#1a1a2e', color: '#fff' 
-        });
+                if (loadedCount === files.length) {
+                    // Masukkan ke array utama
+                    photos.push(...newUploadedUrls);
+                    
+                    // Simpan permanen ke localStorage browser
+                    const currentSaved = JSON.parse(localStorage.getItem('saved_photos')) || [];
+                    currentSaved.push(...newUploadedUrls);
+                    localStorage.setItem('saved_photos', JSON.stringify(currentSaved));
 
-        fileInput.value = "";
+                    // Buat elemen visual untuk foto baru
+                    newUploadedUrls.forEach(url => {
+                        const newImg = createScatteredPhoto(url);
+                        photoContainer.appendChild(newImg);
+                        photoElements.push(newImg);
+                    });
+
+                    currentPhotoIndex = photoElements.length - files.length;
+                    
+                    setTimeout(() => {
+                        photoElements[currentPhotoIndex].classList.add('active-photo');
+                        photoInterval = setInterval(animateNextPhoto, 4000); 
+                    }, 50);
+                    
+                    Swal.fire({ 
+                        toast: true, position: 'top-end', icon: 'success', 
+                        title: `${files.length} Foto berhasil disimpan & ditambahkan!`, 
+                        showConfirmButton: false, timer: 3000, 
+                        background: '#1a1a2e', color: '#fff' 
+                    });
+
+                    fileInput.value = "";
+                }
+            }
+            reader.readAsDataURL(file);
+        });
     }
 });
