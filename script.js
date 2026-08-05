@@ -87,7 +87,7 @@ function typeWriter() {
     } else {
         setTimeout(() => {
             letterBtn.style.display = 'block';
-            addPhotoBtn.style.display = 'block';
+            addPhotoBtn.style.display = 'flex'; // Munculkan tombol kecil di kiri bawah setelah teks selesai
             letterBtn.style.animation = 'fadeIn 1s ease-in';
             addPhotoBtn.style.animation = 'fadeIn 1s ease-in';
         }, 500);
@@ -132,7 +132,6 @@ addPhotoBtn.addEventListener('click', () => {
     });
 });
 
-// MEMPROSES, MENGOMPRES UKURAN, & MENYIMPAN FOTO KE LOCALSTORAGE
 fileInput.addEventListener('change', function(e) {
     if (e.target.files && e.target.files.length > 0) {
         const files = Array.from(e.target.files);
@@ -152,7 +151,6 @@ fileInput.addEventListener('change', function(e) {
                 const img = new Image();
                 img.src = event.target.result;
                 img.onload = function() {
-                    // Kompres resolusi gambar maksimal 500px agar muat banyak di localStorage
                     const canvas = document.createElement('canvas');
                     let width = img.width;
                     let height = img.height;
@@ -175,7 +173,6 @@ fileInput.addEventListener('change', function(e) {
                     const ctx = canvas.getContext('2d');
                     ctx.drawImage(img, 0, 0, width, height);
 
-                    // Ubah ke JPEG terkompresi kualitas 0.7 (ukuran file jadi sangat kecil & aman)
                     const compressedBase64 = canvas.toDataURL('image/jpeg', 0.7);
                     newUploadedUrls.push(compressedBase64);
                     loadedCount++;
