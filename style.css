@@ -4,7 +4,8 @@ body, html {
     margin: 0;
     padding: 0;
     font-family: 'Poppins', sans-serif;
-    background-color: #1a1a2e;
+    /* Background langit malam premium */
+    background: radial-gradient(ellipse at bottom, #1b2735 0%, #090a0f 100%);
     color: #ffffff;
     height: 100vh;
     display: flex;
@@ -12,9 +13,29 @@ body, html {
     align-items: center;
     text-align: center;
     overflow: hidden;
+    position: relative;
 }
 
-/* Mengatur layar agar bergantian muncul */
+/* Efek Bintang Berkelap-kelip */
+.stars {
+    position: absolute;
+    top: 0; left: 0; right: 0; bottom: 0;
+    width: 100%; height: 100%;
+    z-index: 0;
+    background-image: 
+        radial-gradient(white, rgba(255,255,255,.2) 2px, transparent 40px),
+        radial-gradient(white, rgba(255,255,255,.15) 1px, transparent 30px),
+        radial-gradient(white, rgba(255,255,255,.1) 2px, transparent 40px);
+    background-size: 550px 550px, 350px 350px, 250px 250px;
+    background-position: 0 0, 40px 60px, 130px 270px;
+    animation: twinkle 4s infinite alternate;
+}
+
+@keyframes twinkle {
+    0% { opacity: 0.3; }
+    100% { opacity: 1; }
+}
+
 .screen {
     display: none;
     flex-direction: column;
@@ -24,6 +45,7 @@ body, html {
     height: 100%;
     padding: 20px;
     box-sizing: border-box;
+    z-index: 10; /* Agar di depan bintang dan balon */
 }
 
 .screen.active {
@@ -31,7 +53,6 @@ body, html {
     animation: fadeIn 1.5s ease-in;
 }
 
-/* Tombol Buka Kejutan */
 button {
     padding: 15px 35px;
     font-size: 18px;
@@ -44,6 +65,7 @@ button {
     cursor: pointer;
     box-shadow: 0 4px 15px rgba(233, 69, 96, 0.5);
     transition: transform 0.2s, box-shadow 0.2s;
+    z-index: 10;
 }
 
 button:hover {
@@ -51,28 +73,64 @@ button:hover {
     box-shadow: 0 6px 20px rgba(233, 69, 96, 0.7);
 }
 
-/* Galeri Foto */
 .gallery img {
-    width: 250px;
-    height: 250px;
+    width: 220px;
+    height: 220px;
     object-fit: cover;
     border-radius: 20px;
     box-shadow: 0 8px 25px rgba(0, 0, 0, 0.6);
-    margin-bottom: 30px;
+    margin-bottom: 20px;
     transition: opacity 0.5s ease-in-out;
-    border: 3px solid #e94560;
+    border: 4px solid #e94560;
 }
 
-/* Tempat Pesan Teks */
 .message-container {
     width: 90%;
     max-width: 500px;
-    min-height: 120px;
+    min-height: 100px;
     font-size: 18px;
     line-height: 1.6;
+    text-shadow: 1px 1px 5px rgba(0,0,0,0.8);
 }
 
-/* Animasi transisi halus */
+/* Desain Balon Terbang */
+.balloon {
+    position: absolute;
+    bottom: -100px;
+    width: 40px;
+    height: 50px;
+    background-color: #e94560;
+    border-radius: 50%;
+    animation: floatUp ease-in-out infinite;
+    z-index: 1;
+    opacity: 0.8;
+}
+.balloon::before {
+    content: "";
+    position: absolute;
+    bottom: -8px;
+    left: 15px;
+    width: 10px;
+    height: 10px;
+    background-color: inherit;
+    clip-path: polygon(50% 0%, 0% 100%, 100% 100%);
+}
+.balloon::after {
+    content: "";
+    position: absolute;
+    bottom: -35px;
+    left: 19px;
+    width: 2px;
+    height: 30px;
+    background-color: rgba(255,255,255,0.4);
+}
+
+@keyframes floatUp {
+    0% { transform: translateY(0) rotate(-5deg); opacity: 0; }
+    10% { opacity: 0.8; }
+    100% { transform: translateY(-110vh) rotate(5deg); opacity: 0; }
+}
+
 @keyframes fadeIn {
     from { opacity: 0; transform: translateY(20px); }
     to { opacity: 1; transform: translateY(0); }
