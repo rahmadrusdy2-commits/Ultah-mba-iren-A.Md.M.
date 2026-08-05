@@ -16,7 +16,7 @@ let photoElements = [];
 let currentPhotoIndex = -1;
 let photoInterval;
 
-// Fungsi untuk memberi posisi acak pada foto
+// Fungsi untuk memberi posisi acak baru pada foto di latar belakang
 function randomizePosition(img) {
     const randomX = Math.floor(Math.random() * 96) + 2; 
     const randomY = Math.floor(Math.random() * 96) + 2; 
@@ -31,7 +31,7 @@ function createScatteredPhoto(src) {
     const img = document.createElement('img');
     img.src = src;
     img.classList.add('scattered-photo');
-    randomizePosition(img); // Atur posisi acak awal
+    randomizePosition(img);
     return img;
 }
 
@@ -48,9 +48,8 @@ function animateNextPhoto() {
     if (photoElements.length === 0) return;
 
     if (currentPhotoIndex !== -1) {
-        // Hapus kelas aktif, lalu acak ulang posisinya ke tempat baru di latar belakang
         photoElements[currentPhotoIndex].classList.remove('active-photo');
-        randomizePosition(photoElements[currentPhotoIndex]);
+        randomizePosition(photoElements[currentPhotoIndex]); // Mengubah posisi saat kembali ke latar belakang
     }
 
     currentPhotoIndex = (currentPhotoIndex + 1) % photoElements.length;
