@@ -51,29 +51,29 @@ button:hover {
     position: absolute;
     top: 0; left: 0;
     width: 100%; height: 100%;
-    z-index: 1; /* Berada di belakang teks */
+    z-index: 1; /* Di belakang teks */
 }
 
-/* Desain awal foto (Berserakan) */
+/* Desain awal foto (Berserakan di latar belakang) */
 .scattered-photo {
     position: absolute;
-    width: 120px;   /* Ukuran 1x1 */
+    width: 120px;   /* Ukuran rasio 1x1 */
     height: 120px;
     object-fit: cover;
     border: 4px solid #fff;
     border-radius: 15px;
     box-shadow: 0 5px 15px rgba(0,0,0,0.5);
     z-index: 2;
-    /* Efek transisi smooth saat dipindah ke atas & kembali */
+    /* Transisi sangat mulus */
     transition: all 1.5s cubic-bezier(0.4, 0, 0.2, 1); 
 }
 
-/* Desain foto saat bergiliran tampil di atas */
+/* Desain foto saat ditarik ke atas layar (Tampil Utama) */
 .scattered-photo.active-photo {
-    top: 35% !important; /* Posisi atas pesan */
+    top: 35% !important; 
     left: 50% !important;
     transform: translate(-50%, -50%) scale(2.2) rotate(0deg) !important;
-    z-index: 10 !important; /* Paling depan */
+    z-index: 10 !important; /* Maju ke depan */
     border-color: #e94560;
     box-shadow: 0 15px 35px rgba(0,0,0,0.8);
 }
