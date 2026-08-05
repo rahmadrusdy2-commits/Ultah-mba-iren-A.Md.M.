@@ -11,29 +11,35 @@ const photo = document.getElementById('photo');
 const message = "Selamat ulang tahun, Mba Iren! 🎉 Semoga hari-harimu ke depan selalu dipenuhi dengan kebahagiaan, tawa, dan hal-hal manis. Terus bersinar ya! ✨";
 let charIndex = 0;
 
-// Daftar foto awal
 const photos = ['assets/foto1.jpg', 'assets/foto2.jpg']; 
 let photoIndex = 0;
 
 openBtn.addEventListener('click', () => {
     bgMusic.play().catch(error => console.log("Auto-play diblokir browser", error));
+    
     openingScreen.classList.remove('active');
     mainScreen.classList.add('active');
 
-    fireworksEffect();
-    createBalloons();
+    // Tembakan Confetti awal yang simpel
+    if (typeof confetti === 'function') {
+        confetti({
+            particleCount: 150,
+            spread: 80,
+            origin: { y: 0.6 },
+            colors: ['#e94560', '#ffffff', '#ffb400']
+        });
+    }
+
     setTimeout(typeWriter, 1000);
     setInterval(changePhoto, 3500); 
 });
 
-// Fungsi Mengetik
 function typeWriter() {
     if (charIndex < message.length) {
         typingText.innerHTML += message.charAt(charIndex);
         charIndex++;
         setTimeout(typeWriter, 50);
     } else {
-        // Tampilkan kedua tombol setelah teks selesai
         setTimeout(() => {
             letterBtn.style.display = 'block';
             addPhotoBtn.style.display = 'block';
@@ -43,7 +49,6 @@ function typeWriter() {
     }
 }
 
-// Fungsi Ganti Foto
 function changePhoto() {
     photo.style.opacity = 0;
     setTimeout(() => {
@@ -53,38 +58,7 @@ function changePhoto() {
     }, 500);
 }
 
-// Fitur Kembang Api
-function fireworksEffect() {
-    let duration = 15 * 1000;
-    let animationEnd = Date.now() + duration;
-    let defaults = { startVelocity: 30, spread: 360, ticks: 60, zIndex: 0 };
-
-    function randomInRange(min, max) { return Math.random() * (max - min) + min; }
-
-    let interval = setInterval(function() {
-        let timeLeft = animationEnd - Date.now();
-        if (timeLeft <= 0) return clearInterval(interval);
-        
-        let particleCount = 50 * (timeLeft / duration);
-        confetti(Object.assign({}, defaults, { particleCount, origin: { x: randomInRange(0.1, 0.3), y: Math.random() - 0.2 } }));
-        confetti(Object.assign({}, defaults, { particleCount, origin: { x: randomInRange(0.7, 0.9), y: Math.random() - 0.2 } }));
-    }, 250);
-}
-
-// Fitur Balon
-function createBalloons() {
-    for(let i = 0; i < 20; i++) {
-        let balloon = document.createElement('div');
-        balloon.classList.add('balloon');
-        balloon.style.left = Math.random() * 100 + 'vw';
-        balloon.style.filter = `hue-rotate(${Math.random() * 360}deg)`;
-        balloon.style.animationDuration = (Math.random() * 4 + 5) + 's'; 
-        balloon.style.animationDelay = (Math.random() * 5) + 's';
-        document.body.appendChild(balloon);
-    }
-}
-
-// Klik Tombol Surat
+// Pop-up Surat
 letterBtn.addEventListener('click', () => {
     Swal.fire({
         title: 'Surat Khusus 💌',
@@ -101,9 +75,7 @@ letterBtn.addEventListener('click', () => {
     });
 });
 
-// ==========================================
-// FITUR BARU: INPUT FOTO DENGAN SANDI
-// ==========================================
+// Fitur Input Foto dengan Sandi
 addPhotoBtn.addEventListener('click', () => {
     Swal.fire({
         title: 'Masukkan Sandi Rahasia',
@@ -115,7 +87,6 @@ addPhotoBtn.addEventListener('click', () => {
         confirmButtonText: 'Verifikasi',
     }).then((result) => {
         if (result.isConfirmed) {
-            // Mengecek kata sandi
             if (result.value === "UNYmantap1") {
                 Swal.fire({
                     title: 'Akses Diberikan! 🔓',
@@ -126,7 +97,6 @@ addPhotoBtn.addEventListener('click', () => {
                     timer: 2000,
                     showConfirmButton: false
                 }).then(() => {
-                    // Membuka jendela pemilihan file (galeri)
                     fileInput.click();
                 });
             } else {
@@ -143,17 +113,15 @@ addPhotoBtn.addEventListener('click', () => {
     });
 });
 
-// Menangani foto setelah pengguna memilihnya dari galeri HP/Laptop
+// Memproses Foto
 fileInput.addEventListener('change', function(e) {
     if (e.target.files && e.target.files[0]) {
         const reader = new FileReader();
         reader.onload = function(event) {
             const newPhotoUrl = event.target.result;
-            
-            // Masukkan foto baru ke dalam antrean slideshow
             photos.push(newPhotoUrl);
             
-            // Langsung paksa tampilkan foto baru tersebut
+            // Langsung pindah ke foto baru
             photoIndex = photos.length - 1;
             photo.style.opacity = 0;
             setTimeout(() => {
@@ -172,7 +140,6 @@ fileInput.addEventListener('change', function(e) {
                 color: '#fff'
             });
         }
-        // Membaca file gambar sebagai URL
         reader.readAsDataURL(e.target.files[0]);
     }
 });
