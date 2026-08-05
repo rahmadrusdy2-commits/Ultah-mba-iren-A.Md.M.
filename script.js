@@ -11,7 +11,6 @@ const photoContainer = document.getElementById('photo-container');
 const message = "Selamat ulang tahun, Mba Iren! 🎉 Semoga hari-harimu ke depan selalu dipenuhi dengan kebahagiaan, tawa, dan hal-hal manis. Terus bersinar ya! ✨";
 let charIndex = 0;
 
-// Menggabungkan foto bawaan dan foto yang sudah tersimpan permanen di localStorage browser
 const defaultPhotos = ['assets/foto1.jpg', 'assets/foto2.jpg'];
 const savedPhotos = JSON.parse(localStorage.getItem('saved_photos')) || [];
 let photos = [...defaultPhotos, ...savedPhotos];
@@ -39,6 +38,8 @@ function createScatteredPhoto(src) {
 }
 
 function initPhotos() {
+    photoContainer.innerHTML = "";
+    photoElements = [];
     photos.forEach(src => {
         const img = createScatteredPhoto(src);
         photoContainer.appendChild(img);
@@ -49,13 +50,15 @@ function initPhotos() {
 function animateNextPhoto() {
     if (photoElements.length === 0) return;
 
-    if (currentPhotoIndex !== -1) {
+    if (currentPhotoIndex !== -1 && photoElements[currentPhotoIndex]) {
         photoElements[currentPhotoIndex].classList.remove('active-photo');
         randomizePosition(photoElements[currentPhotoIndex]);
     }
 
     currentPhotoIndex = (currentPhotoIndex + 1) % photoElements.length;
-    photoElements[currentPhotoIndex].classList.add('active-photo');
+    if (photoElements[currentPhotoIndex]) {
+        photoElements[currentPhotoIndex].classList.add('active-photo');
+    }
 }
 
 openBtn.addEventListener('click', () => {
@@ -95,7 +98,7 @@ letterBtn.addEventListener('click', () => {
     Swal.fire({
         title: 'Surat Khusus 💌',
         html: '<p style="line-height: 1.8; text-align: justify; font-size: 16px;">Selamat ulang tahun, Mba Iren! 🎂<br><br>Semoga di umur yang baru ini, semua impian yang belum terwujud bisa segera tercapai. Selalu dikelilingi oleh orang-baik, dijauhkan dari hal-hal sedih, dan selalu diberikan kesehatan. Jangan lupa untuk selalu tersenyum dan bahagia ya!<br><br><i>Enjoy your special day!</i> ❤️</p>',
-        imageUrl: photos[currentPhotoIndex], 
+        imageUrl: photos[currentPhotoIndex] || photos[0], 
         imageWidth: 200,
         imageHeight: 200,
         imageAlt: 'Foto Mba Iren',
@@ -129,7 +132,7 @@ addPhotoBtn.addEventListener('click', () => {
     });
 });
 
-// MEMPROSES & MENYIMPAN FOTO PERMANEN KE LOCALSTORAGE
+// MEMPROSES, MENGOMPRES UKURAN, & MENYIMPAN FOTO KE LOCALSTORAGE
 fileInput.addEventListener('change', function(e) {
     if (e.target.files && e.target.files.length > 0) {
         const files = Array.from(e.target.files);
@@ -138,7 +141,7 @@ fileInput.addEventListener('change', function(e) {
 
         clearInterval(photoInterval);
         
-        if (currentPhotoIndex !== -1) {
+        if (currentPhotoIndex !== -1 && photoElements[currentPhotoIndex]) {
             photoElements[currentPhotoIndex].classList.remove('active-photo');
             randomizePosition(photoElements[currentPhotoIndex]);
         }
@@ -146,41 +149,70 @@ fileInput.addEventListener('change', function(e) {
         files.forEach((file) => {
             const reader = new FileReader();
             reader.onload = function(event) {
-                const base64Url = event.target.result;
-                newUploadedUrls.push(base64Url);
-                loadedCount++;
+                const img = new Image();
+                img.src = event.target.result;
+                img.onload = function() {
+                    // Kompres resolusi gambar maksimal 500px agar muat banyak di localStorage
+                    const canvas = document.createElement('canvas');
+                    let width = img.width;
+                    let height = img.height;
+                    const maxDim = 500;
 
-                if (loadedCount === files.length) {
-                    // Masukkan ke array utama
-                    photos.push(...newUploadedUrls);
-                    
-                    // Simpan permanen ke localStorage browser
-                    const currentSaved = JSON.parse(localStorage.getItem('saved_photos')) || [];
-                    currentSaved.push(...newUploadedUrls);
-                    localStorage.setItem('saved_photos', JSON.stringify(currentSaved));
+                    if (width > height) {
+                        if (width > maxDim) {
+                            height *= maxDim / width;
+                            width = maxDim;
+                        }
+                    } else {
+                        if (height > maxDim) {
+                            width *= maxDim / height;
+                            height = maxDim;
+                        }
+                    }
 
-                    // Buat elemen visual untuk foto baru
-                    newUploadedUrls.forEach(url => {
-                        const newImg = createScatteredPhoto(url);
-                        photoContainer.appendChild(newImg);
-                        photoElements.push(newImg);
-                    });
+                    canvas.width = width;
+                    canvas.height = height;
+                    const ctx = canvas.getContext('2d');
+                    ctx.drawImage(img, 0, 0, width, height);
 
-                    currentPhotoIndex = photoElements.length - files.length;
-                    
-                    setTimeout(() => {
-                        photoElements[currentPhotoIndex].classList.add('active-photo');
-                        photoInterval = setInterval(animateNextPhoto, 4000); 
-                    }, 50);
-                    
-                    Swal.fire({ 
-                        toast: true, position: 'top-end', icon: 'success', 
-                        title: `${files.length} Foto berhasil disimpan & ditambahkan!`, 
-                        showConfirmButton: false, timer: 3000, 
-                        background: '#1a1a2e', color: '#fff' 
-                    });
+                    // Ubah ke JPEG terkompresi kualitas 0.7 (ukuran file jadi sangat kecil & aman)
+                    const compressedBase64 = canvas.toDataURL('image/jpeg', 0.7);
+                    newUploadedUrls.push(compressedBase64);
+                    loadedCount++;
 
-                    fileInput.value = "";
+                    if (loadedCount === files.length) {
+                        photos.push(...newUploadedUrls);
+                        
+                        try {
+                            const currentSaved = JSON.parse(localStorage.getItem('saved_photos')) || [];
+                            currentSaved.push(...newUploadedUrls);
+                            localStorage.setItem('saved_photos', JSON.stringify(currentSaved));
+                        } catch (err) {
+                            console.log("Penyimpanan penuh:", err);
+                        }
+
+                        newUploadedUrls.forEach(url => {
+                            const newImg = createScatteredPhoto(url);
+                            photoContainer.appendChild(newImg);
+                            photoElements.push(newImg);
+                        });
+
+                        currentPhotoIndex = photoElements.length - files.length;
+                        
+                        setTimeout(() => {
+                            animateNextPhoto();
+                            photoInterval = setInterval(animateNextPhoto, 4000); 
+                        }, 50);
+                        
+                        Swal.fire({ 
+                            toast: true, position: 'top-end', icon: 'success', 
+                            title: `${files.length} Foto berhasil dikompres & disimpan!`, 
+                            showConfirmButton: false, timer: 3000, 
+                            background: '#1a1a2e', color: '#fff' 
+                        });
+
+                        fileInput.value = "";
+                    }
                 }
             }
             reader.readAsDataURL(file);
