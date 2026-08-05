@@ -5,11 +5,17 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Kejutan untuk Mba Iren! 🎉</title>
     <link rel="stylesheet" href="style.css">
-    <!-- Library untuk efek Confetti -->
+    
+    <!-- Library untuk efek Confetti & Kembang Api -->
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    
+    <!-- Library untuk Pop-up Surat Digital (SweetAlert2) -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </head>
 <body>
-    <!-- Pastikan nama file musik sesuai dengan yang ada di folder assets -->
+    <!-- Latar Belakang Bintang -->
+    <div class="stars"></div>
+
     <audio id="bg-music" src="assets/music.mp3" loop></audio>
 
     <!-- Halaman Pembuka -->
@@ -18,7 +24,7 @@
         <button id="open-btn">Buka Kejutan 🎁</button>
     </div>
 
-    <!-- Halaman Utama (Muncul setelah tombol diklik) -->
+    <!-- Halaman Utama -->
     <div id="main-screen" class="screen">
         <div class="gallery">
             <img id="photo" src="assets/foto1.jpg" alt="Foto Kenangan">
@@ -26,6 +32,8 @@
         <div class="message-container">
             <p id="typing-text"></p>
         </div>
+        <!-- Tombol ini awalnya disembunyikan, akan muncul otomatis nanti -->
+        <button id="letter-btn" style="display: none; margin-top: 25px;">Baca Surat Khusus 💌</button>
     </div>
 
     <script src="script.js"></script>
