@@ -23,11 +23,13 @@ function createScatteredPhoto(src) {
     img.src = src;
     img.classList.add('scattered-photo');
     
-    // Posisi acak di area layar
-    const randomX = Math.floor(Math.random() * 70) + 15;
-    const randomY = Math.floor(Math.random() * 70) + 15;
-    // Kemiringan acak
-    const randomRot = Math.floor(Math.random() * 50) - 25; 
+    // PEMBARUAN: Posisi acak kini diperluas hampir ke seluruh layar (2% hingga 98%)
+    // Ini akan mencegah penumpukan berlebihan di tengah frame
+    const randomX = Math.floor(Math.random() * 96) + 2; 
+    const randomY = Math.floor(Math.random() * 96) + 2; 
+    
+    // Kemiringan acak yang sedikit lebih dinamis (-35 hingga 35 derajat)
+    const randomRot = Math.floor(Math.random() * 70) - 35; 
     
     img.style.left = `${randomX}vw`;
     img.style.top = `${randomY}vh`;
