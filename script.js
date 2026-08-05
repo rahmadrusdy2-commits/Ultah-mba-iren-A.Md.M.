@@ -1,6 +1,7 @@
 const openBtn = document.getElementById('open-btn');
 const letterBtn = document.getElementById('letter-btn');
 const addPhotoBtn = document.getElementById('add-photo-btn');
+const gameBtn = document.getElementById('game-btn');
 const fileInput = document.getElementById('file-input');
 const openingScreen = document.getElementById('opening-screen');
 const mainScreen = document.getElementById('main-screen');
@@ -87,9 +88,11 @@ function typeWriter() {
     } else {
         setTimeout(() => {
             letterBtn.style.display = 'block';
-            addPhotoBtn.style.display = 'flex'; // Munculkan tombol kecil di kiri bawah setelah teks selesai
+            addPhotoBtn.style.display = 'flex'; 
+            gameBtn.style.display = 'flex'; // Munculkan tombol game di kiri bawah
             letterBtn.style.animation = 'fadeIn 1s ease-in';
             addPhotoBtn.style.animation = 'fadeIn 1s ease-in';
+            gameBtn.style.animation = 'fadeIn 1s ease-in';
         }, 500);
     }
 }
@@ -107,6 +110,63 @@ letterBtn.addEventListener('click', () => {
         background: '#1a1a2e',
         color: '#fff',
         backdrop: `rgba(0,0,0,0.8)`
+    });
+});
+
+// ==========================================
+// FITUR MINI GAME BERHADIAH SHOPEEPAY (PRANK)
+// ==========================================
+gameBtn.addEventListener('click', () => {
+    let score = 0;
+    Swal.fire({
+        title: '🎮 Misi Kilat ShopeePay!',
+        html: `
+            <p style="font-size: 15px; margin-bottom: 15px;">Ketuk tombol <b>"KLIK KADO!"</b> secepat mungkin selama 7 detik untuk klaim saldo ShopeePay Rp 50.000.000!</p>
+            <h2 id="game-score" style="color: #ffb703; font-size: 36px; margin: 10px 0;">0 Kado</h2>
+            <button id="tap-btn" style="background-color: #ffb703; color: #1a1a2e; font-size: 20px; padding: 15px 30px; border-radius: 50px; font-weight: bold; border: none; cursor: pointer; box-shadow: 0 4px 15px rgba(255,183,3,0.5);">🎁 KLIK KADO!</button>
+        `,
+        background: '#1a1a2e',
+        color: '#fff',
+        showConfirmButton: false,
+        allowOutsideClick: false,
+        didOpen: () => {
+            const tapBtn = document.getElementById('tap-btn');
+            const scoreDisplay = document.getElementById('game-score');
+            
+            tapBtn.addEventListener('click', () => {
+                score++;
+                scoreDisplay.innerText = `${score} Kado`;
+                // Efek getar tombol saat diklik
+                tapBtn.style.transform = 'scale(0.95)';
+                setTimeout(() => tapBtn.style.transform = 'scale(1)', 100);
+            });
+
+            // Timer game selama 7 detik
+            let timeLeft = 7;
+            const timerInterval = setInterval(() => {
+                timeLeft--;
+                if (timeLeft <= 0) {
+                    clearInterval(timerInterval);
+                    // Sembunyikan game dan tampilkan hasil pencairan ShopeePay palsu yang romantis
+                    Swal.fire({
+                        title: '🎉 Berhasil!',
+                        html: `
+                            <p>Kamu berhasil mengumpulkan <b>${score} Kado</b>!</p>
+                            <p style="color: #06d6a0; font-weight: bold; margin-top: 10px;">Rp 50.000.000 berhasil dikirim ke ShopeePay Mba Iren! 💸</p>
+                            <p style="font-size: 13px; color: #aaa; margin-top: 15px;"><i>(Tapi boong! Saldo tercairkan dalam bentuk doa dan kebahagiaan abadi dari yang buat web ini wkwk ❤️)</i></p>
+                        `,
+                        icon: 'success',
+                        background: '#1a1a2e',
+                        color: '#fff',
+                        confirmButtonText: 'Asyik! Terima Kasih 💖',
+                        confirmButtonColor: '#e94560'
+                    });
+                    if (typeof confetti === 'function') {
+                        confetti({ particleCount: 200, spread: 100, origin: { y: 0.5 } });
+                    }
+                }
+            }, 1000);
+        }
     });
 });
 
