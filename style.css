@@ -66,7 +66,6 @@ button:hover {
     transition: all 1.5s cubic-bezier(0.4, 0, 0.2, 1); 
 }
 
-/* Posisi digeser ke atas (top: 26%) agar tidak menimpa teks */
 .scattered-photo.active-photo {
     top: 26% !important; 
     left: 50% !important;
@@ -104,27 +103,40 @@ button:hover {
     width: 100%;
 }
 
-/* TOMBOL TAMBAH FOTO (KECIL DI KIRI BAWAH) */
-#add-photo-btn {
+/* WADAH TOMBOL KECIL DI KIRI BAWAH */
+.floating-left-buttons {
     position: absolute;
     bottom: 20px;
     left: 20px;
-    padding: 10px 14px;
-    font-size: 16px;
-    border-radius: 50%; /* Membuatnya jadi tombol bulat kecil yang manis */
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    z-index: 100;
+}
+
+/* TOMBOL KECIL (FOTO & GAME) */
+.floating-left-buttons button {
+    padding: 0;
+    font-size: 18px;
+    border-radius: 50%;
     width: 45px;
     height: 45px;
     display: flex;
     align-items: center;
     justify-content: center;
-    background-color: #00bbf9;
-    box-shadow: 0 4px 15px rgba(0, 187, 249, 0.5);
-    z-index: 100;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.4);
 }
 
-#add-photo-btn:hover {
+#add-photo-btn {
+    background-color: #00bbf9;
+}
+
+#game-btn {
+    background-color: #ffb703;
+}
+
+.floating-left-buttons button:hover {
     transform: scale(1.1);
-    box-shadow: 0 6px 20px rgba(0, 187, 249, 0.7);
 }
 
 @keyframes fadeIn {
